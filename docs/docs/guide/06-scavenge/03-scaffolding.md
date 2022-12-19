@@ -22,7 +22,7 @@ others.
 Change the current directory to `scavenge`:
 
 [mdrun]: # (exec)
-```bash mdrun=q
+```bash
 cd scavenge
 ```
 
