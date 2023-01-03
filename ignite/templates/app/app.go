@@ -15,8 +15,28 @@ import (
 //go:embed files/* files/**/*
 var fs embed.FS
 
-// New returns the generator to scaffold a new Cosmos SDK app.
-func New(opts *Options) (*genny.Generator, error) {
+// NewGenerator returns the generator to scaffold a new Cosmos SDK app.
+func NewGenerator(opts *Options) (*genny.Generator, error) {
+	g, err := newGenerator(opts, fs)
+	if err != nil {
+		return nil, err
+	}
+	// Create the 'testutil' package with the test helpers
+	if err := testutil.Register(g, opts.AppPath); err != nil {
+		return nil, err
+	}
+	return g, nil
+}
+
+//go:embed files/tools/tools.go.plush
+var fsToolsGo embed.FS
+
+// NewToolsGoGenerator returns a new generator to scaffold tools.go file.
+func NewToolsGoGenerator(opts *Options) (*genny.Generator, error) {
+	return newGenerator(opts, fsToolsGo)
+}
+
+func newGenerator(opts *Options, fs embed.FS) (*genny.Generator, error) {
 	var (
 		g        = genny.New()
 		template = xgenny.NewEmbedWalker(fs, "files/", opts.AppPath)
@@ -36,11 +56,6 @@ func New(opts *Options) (*genny.Generator, error) {
 	g.Transformer(xgenny.Transformer(ctx))
 	g.Transformer(genny.Replace("{{appName}}", opts.AppName))
 	g.Transformer(genny.Replace("{{binaryNamePrefix}}", opts.BinaryNamePrefix))
-
-	// Create the 'testutil' package with the test helpers
-	if err := testutil.Register(g, opts.AppPath); err != nil {
-		return g, err
-	}
 
 	return g, nil
 }

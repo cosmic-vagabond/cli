@@ -64,7 +64,7 @@ func generate(
 		githubPath = fmt.Sprintf("username/%s", githubPath)
 	}
 
-	g, err := app.New(&app.Options{
+	g, err := app.NewGenerator(&app.Options{
 		// generate application template
 		ModulePath:       pathInfo.RawPath,
 		AppName:          pathInfo.Package,
@@ -99,11 +99,11 @@ func generate(
 		if err != nil {
 			return err
 		}
-		if err := run(genny.WetRunner(context.Background()), g); err != nil {
+		if err := run(genny.WetRunner(ctx), g); err != nil {
 			return err
 		}
 		g = modulecreate.NewAppModify(tracer, opts)
-		if err := run(genny.WetRunner(context.Background()), g); err != nil {
+		if err := run(genny.WetRunner(ctx), g); err != nil {
 			return err
 		}
 

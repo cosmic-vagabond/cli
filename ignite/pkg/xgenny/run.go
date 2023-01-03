@@ -33,6 +33,7 @@ func DryRunner(ctx context.Context) *genny.Runner {
 }
 
 // RunWithValidation checks the generators with a dry run and then execute the wet runner to the generators.
+// FIXME(tb) tracer doesn't look useful here, remove it ?
 func RunWithValidation(
 	tracer *placeholder.Tracer,
 	gens ...*genny.Generator,

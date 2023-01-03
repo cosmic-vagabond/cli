@@ -133,6 +133,15 @@ func Install(ctx context.Context, path string, pkgs []string, options ...exec.Op
 	return exec.Exec(ctx, command, append(options, exec.StepOption(step.Workdir(path)))...)
 }
 
+// IsInstallError returns true if err is interpreted as a go install error.
+func IsInstallError(err error) bool {
+	if err == nil {
+		return false
+	}
+	const label = "no required module provides package"
+	return strings.Contains(err.Error(), label)
+}
+
 // Get runs go get pkgs on path with options.
 func Get(ctx context.Context, path string, pkgs []string, options ...exec.Option) error {
 	command := []string{
